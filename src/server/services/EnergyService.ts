@@ -38,7 +38,7 @@ export class EnergyService implements OnStart, OnTick {
 			print(`EnergyService: Player ${player.Name} gained ${energyGain} energy`);
 
 			// Reset cooldown after delay
-			task.wait(this.CLICK_COOLDOWN_TIME);
+			task.wait(ENERGY.CLICK_COOLDOWN_TIME);
 			this.playerCooldowns.set(player, false);
 		});
 

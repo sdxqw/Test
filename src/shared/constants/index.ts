@@ -14,7 +14,7 @@ export const ENERGY = {
 	ENERGY_TICK_RATE: 1,
 
 	/** Cooldown between clicks (in seconds) */
-	CLICK_COOLDOWN_TIME: 0.05,
+	CLICK_COOLDOWN_TIME: 0.5,
 };
 
 /**

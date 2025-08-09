@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "@rbxts/react";
-import { usePx } from "../hooks/usePx";
+import { useScaler } from "@rbxts/ui-scaler";
+
 import { useMotion } from "client/ui/hooks/useMotion";
 import { springs } from "client/utils/springs";
 
@@ -11,33 +12,31 @@ interface StatDisplayProps {
 }
 
 export function StatDisplay({ iconImage, value, amount, scale }: StatDisplayProps) {
-	const px = usePx();
+	const scaleApi = useScaler(new Vector2(1280, 720));
+	const px = scaleApi.px;
 
 	// Animation for PlusText
-	const [animationScale, scaleApi] = useMotion(1);
+	const [animationScale, scaleApiMotion] = useMotion(1);
 
 	useEffect(() => {
 		if (amount !== undefined) {
-			scaleApi.set(1.5); // start bigger
-			scaleApi.spring(0.7, springs.responsive); // return to normal size
+			scaleApiMotion.set(1.5); // start bigger
+			scaleApiMotion.spring(0.7, springs.responsive); // return to normal size
 		}
 	}, [amount]);
 
-	// Convert to string to measure
 	const valueStr = tostring(value);
 
-	// Estimate position above the last digit
-	// Assumption: average digit width ≈ 0.6 of TextSize
 	const lastDigitX = useMemo(() => {
 		const avgDigitWidth = px(30 * scale) * 0.8; // TextSize * scale * proportion of width
-		const baseX = px(65 * scale); // starting X of the value text
+		const baseX = px(65 * scale);
 		return baseX + avgDigitWidth * valueStr.size();
 	}, [valueStr, px, scale]);
 
 	return (
 		<frame
 			Size={new UDim2(0, px(200 * scale), 0, px(60 * scale))}
-			Position={new UDim2(0, px(20 * scale), 1, px(-80 * scale))}
+			Position={new UDim2(0, px(20 * scale), 1, -px(80 * scale))}
 			BackgroundTransparency={1}
 		>
 			{/* Icon */}
@@ -79,10 +78,8 @@ export function StatDisplay({ iconImage, value, amount, scale }: StatDisplayProp
 			{amount !== undefined && (
 				<textlabel
 					Size={animationScale.map((s) => new UDim2(0, px(50 * scale) * s, 0, px(40 * scale) * s))}
-					Position={animationScale.map(
-						() => new UDim2(0, lastDigitX, 0, -px(20 * scale) * -1), // X above last digit, Y slightly up
-					)}
-					AnchorPoint={new Vector2(0.5, 1)} // anchor bottom center so it sits above
+					Position={animationScale.map(() => new UDim2(0, lastDigitX, 0, px(20 * scale)))}
+					AnchorPoint={new Vector2(0.5, 1)}
 					Text={`+${amount}`}
 					TextColor3={Color3.fromRGB(255, 255, 0)}
 					BackgroundTransparency={1}
