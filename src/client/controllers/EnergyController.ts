@@ -1,6 +1,7 @@
 import { Controller, OnStart } from "@flamework/core";
 import { UserInputService } from "@rbxts/services";
 import { Events } from "client/network";
+import { ENERGY } from "shared/constants";
 
 /**
  * Controller responsible for handling energy-related interactions
@@ -11,7 +12,6 @@ export class EnergyController implements OnStart {
 	constructor() {}
 
 	private clickCooldown = false;
-	private readonly CLICK_COOLDOWN_TIME = 0.05; // 50ms cooldown
 
 	onStart() {
 		print("EnergyController started");
@@ -27,7 +27,7 @@ export class EnergyController implements OnStart {
 				Events.playerClickEnergy.fire();
 
 				// Reset cooldown after delay
-				task.wait(this.CLICK_COOLDOWN_TIME);
+				task.wait(ENERGY.CLICK_COOLDOWN_TIME);
 				this.clickCooldown = false;
 			}
 		});

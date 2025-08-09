@@ -12,13 +12,22 @@ import { Events, Functions } from "server/network";
 @Service({})
 export class EnergyService implements OnStart, OnTick {
 	private dataService = Dependency<PlayerDataService>();
+	private playerCooldowns = new Map<Player, boolean>();
 	private energyAccumulator = 0;
 
 	onStart() {
 		// Handle player clicks to generate energy
 		Events.playerClickEnergy.connect((player: Player) => {
+			if (this.playerCooldowns.get(player)) {
+				// Player is still on cooldown, ignore click
+				return;
+			}
+
 			const playerData = this.dataService.getPlayerData(player);
 			if (!playerData) return;
+
+			// Set player cooldown to true
+			this.playerCooldowns.set(player, true);
 
 			// Calculate energy gain based on multiplier
 			const energyGain = math.max(1, math.floor(playerData.multiplier));
@@ -27,6 +36,10 @@ export class EnergyService implements OnStart, OnTick {
 			// Update player stats
 			this.sendPlayerStats(player);
 			print(`EnergyService: Player ${player.Name} gained ${energyGain} energy`);
+
+			// Reset cooldown after delay
+			task.wait(this.CLICK_COOLDOWN_TIME);
+			this.playerCooldowns.set(player, false);
 		});
 
 		// Handle requests for player stats
