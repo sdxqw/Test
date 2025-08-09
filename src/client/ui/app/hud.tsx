@@ -42,7 +42,7 @@ export function HUD() {
 				<frame
 					key="StatsInner"
 					Size={UDim2.fromOffset(px(80), px(80))}
-					Position={new UDim2(0, 0, 1, -px(120))}
+					Position={new UDim2(0, 0, 1, -px(160))}
 					BackgroundTransparency={1}
 				>
 					<uilistlayout
