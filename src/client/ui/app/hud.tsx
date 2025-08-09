@@ -3,13 +3,15 @@ import { Events } from "client/network";
 import { StatDisplay } from "client/ui/components/StatDisplay";
 import { Layer } from "client/ui/components/Layer";
 import { IS_PLUGIN } from "shared/constants";
-import { usePx } from "client/ui/hooks/usePx";
+
 import { QuickActions } from "../components/QuickActions";
+import { useScaler } from "@rbxts/ui-scaler";
 
 export function HUD() {
 	const [energy, setEnergy] = useState(IS_PLUGIN ? 80 : 0);
 	const [plusText, setPlusText] = useState<number | undefined>(IS_PLUGIN ? 5 : undefined);
-	const px = usePx();
+	const scaleApi = useScaler(new Vector2(1920, 1080));
+	const px = scaleApi.px;
 
 	useEffect(() => {
 		if (!IS_PLUGIN) {
